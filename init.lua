@@ -102,7 +102,15 @@ vim.g.have_nerd_font = false
 vim.o.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.o.relativenumber = true
+vim.o.relativenumber = true
+
+-- Indentation settings
+vim.o.tabstop = 4 -- Number of spaces in a tab
+vim.o.shiftwidth = 4 -- Indentation level
+vim.o.expandtab = true -- Use spaces instead of tabs
+vim.o.autoindent = true -- Copy indent from current line when starting a new line
+vim.o.smartindent = true -- Smart indentation
+vim.o.copyindent = true -- Copy indent from previous line
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.o.mouse = 'a'
@@ -614,7 +622,7 @@ require('lazy').setup({
       -- You can press `g?` for help in this menu.
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
-        'lua_ls', -- Lua Language server
+        'lua-language-server', -- Lua Language server
         'stylua', -- Used to format Lua code
         -- You can add other tools here that you want Mason to install
       })
@@ -849,14 +857,43 @@ require('lazy').setup({
     end,
   },
 
-  { -- Highlight, edit, and navigate code
+  {
     'nvim-treesitter/nvim-treesitter',
+    lazy = false,
+    build = ':TSUpdate',
     config = function()
-      local filetypes = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
-      require('nvim-treesitter').install(filetypes)
+      require('nvim-treesitter.configs').setup {
+        ensure_installed = {
+          'c',
+          'html',
+          'lua',
+          'javascript',
+          'typescript',
+          'php',
+          'python',
+          'go',
+          'java',
+          'vim',
+          'vimdoc',
+        },
+        highlight = {
+          enable = true,
+          additional_vim_regex_highlighting = false, -- Disable if not needed
+        },
+        indent = {
+          enable = true,
+        },
+        -- Add other modules here if necessary
+      }
+
+      vim.api.nvim_create_augroup('TreesitterFileType', { clear = true })
       vim.api.nvim_create_autocmd('FileType', {
-        pattern = filetypes,
-        callback = function() vim.treesitter.start() end,
+        pattern = { 'c', 'html', 'lua', 'javascript', 'typescript', 'php', 'python' },
+        callback = function()
+          -- You don't need to explicitly call start
+          -- Treesitter highlights are automatically enabled based on the setup
+        end,
+        group = 'TreesitterFileType',
       })
     end,
   },
