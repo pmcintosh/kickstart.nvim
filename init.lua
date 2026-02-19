@@ -611,6 +611,7 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
+        intelephense = {},
       }
 
       -- Ensure the servers and tools above are installed
@@ -625,6 +626,7 @@ require('lazy').setup({
         'lua-language-server', -- Lua Language server
         'stylua', -- Used to format Lua code
         -- You can add other tools here that you want Mason to install
+        'intelephense',
       })
 
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
